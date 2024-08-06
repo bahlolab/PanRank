@@ -94,7 +94,7 @@ function joinDataRowWise(data1, data2) {
 }
 
 // Create DataTable
-function createDataTable(data, filename) {
+function createDataTable(data) {
     
     if ($.fn.DataTable.isDataTable('#data-table')) {
       let dataTable = $('#data-table').DataTable();
@@ -102,17 +102,34 @@ function createDataTable(data, filename) {
       dataTable.rows.add(data);
       dataTable.draw();
     } else {
-      const columns = Object.keys(data[0] || {}).map(key => ({ title: key, data: key }));
+      const columns = Object.keys(data[0] || {}).map(key => ({ 
+          title: key,
+          data: key,
+          render: renderFun(key)
+      }));
       $('#data-table').DataTable({
           data: data,
           columns: columns,
           dom: 'frtBip',
           buttons: [
             { extend: 'csvHtml5',   text: 'Export CSV',   title: getFilename },
-            { extend: 'excelHtml5', text: 'Export Excel', title: getFilename}
+            { extend: 'excelHtml5', text: 'Export Excel', title: getFilename }
         ],
       });
     }
+}
+
+function renderFun(key) {
+  if ( key === 'Ensembl' ) {
+    return function(data) {
+      return `<a href="https://ensembl.org/Homo_sapiens/Gene/Summary?g=${data}" target="_blank">${data}</a>`;
+    };
+  }
+  if ( key === 'Symbol' ) {
+    return function(data) {
+      return `<a href="http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg38&position=${data}" target="_blank">${data}</a>`;
+    };
+  }
 }
 
 function getFilename() {
@@ -120,7 +137,7 @@ function getFilename() {
 }
 
 // Load and update data on dropdown change
-async function loadData(url1, url2, filename) {
+async function loadData(url1, url2) {
     
     let data1 = [];
     let data2 = [];
@@ -129,7 +146,7 @@ async function loadData(url1, url2, filename) {
       data1 = parsedData1;
       if (data2.length > 0) {
         const joinedData = joinDataRowWise(parsedData1, data2);
-        createDataTable(joinedData, filename);
+        createDataTable(joinedData);
       }
     });
 
@@ -137,7 +154,7 @@ async function loadData(url1, url2, filename) {
       data2 = parsedData2;
       if (data1.length > 0) {
           const joinedData = joinDataRowWise(data1, parsedData2);
-          createDataTable(joinedData, filename);
+          createDataTable(joinedData);
       }
     });
 }
@@ -146,14 +163,12 @@ $(document).ready(function() {
     // Initialize with the first option
     const url1 = "data/fixed.csv.gz";
     const initialUrl = $('#file-select').val();
-    const initialFilename = $('#file-select option:selected').text();
-    loadData(url1, initialUrl, initialFilename);
+    loadData(url1, initialUrl);
 
     // Update DataTable when dropdown value changes
     $('#file-select').change(function() {
         const selectedUrl = $(this).val();
-        const selectedFilename =  $('#file-select option:selected').text();
-        loadData(url1, selectedUrl, selectedFilename);
+        loadData(url1, selectedUrl);
     });
 });
 
