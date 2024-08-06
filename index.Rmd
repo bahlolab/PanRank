@@ -1,0 +1,31 @@
+# PanRank Alpha <img src="img/WEHI.png" align="right" height="80"/>
+
+[Jacob E. Munro](https://orcid.org/0000-0002-2751-0989), [Mark F. Bennett](https://orcid.org/0000-0002-3561-6804), [Melanie Bahlo](https://orcid.org/0000-0001-5132-0774)
+
+---
+
+PanRank is a method for ranking candidate disease genes based on a known disease gene panel developed by the [Bahlo Lab](https://www.wehi.edu.au/laboratory/bahlo-lab/). PanRank predictions are made by a logistic regression model. This site is a work in progress.
+
+---
+
+### Training Data
+
+| Dataset |	#Gene |	#Pred. | Predictor Description |
+| ------- |	----- |	------ | --------------------- |
+| STRING Coexpression	| 18,911 | 18,911 |	Pairwise gene scores indicating degree of coexpression |
+| STRING Experimental	| 18,628 |	18,628 |	Pairwise gene scores indicating degree of protein-protein interaction |
+| STRING Neighbourhood |	4,151 |	4,151	| Pairwise gene scores indicating genomic proximity  |
+| STRING Cooccurrence  |	10,125  |	10,125  |	Pairwise gene scores indicating degree of cooccurrence across species  |
+| STRING Database |	12,927  |	12,927  |	Pairwise gene scores indicating interactions across curated databases  |
+| GO Biological Process  |	18,814  |	8,567 |	Binary presence of GO Biological Process term annotation  |
+| GO Cellular Component  |	18,814  |	1,146 |	Binary presence of GO Cellular Compartment term annotation  |
+| GO Molecular Function  |	18,814  |	2,027 |	Binary presence of GO Molecular Function term annotation  |
+| GnomAD Constraint	 | 17894  | 15  |	“LOEUF” and other gene constraint metrics derived from gnomAD v4  |
+| DiSignAtlas  | 19,003 |	5,259 |	Binary presence of gene in differential expressed sets across diseases |
+| PsychENCODE |	18,730 |	1,866	| Gene expression in prefrontal cortex across neurodevelopment disorders and controls  |
+| DESCARTES  |	18,529 |	172 |	A single cell atlas of foetal gene expression  |
+| GeVIR Rank |	18,266 |	15 |	Gene constraint metrics derived from gnomAD v3 |
+| GTEx Expression |	18758 |	54 |	Median gene expression across 54 postmortem tissues |
+| ZFIN Phenotypes |	4,216 |	21,499 |	Binary phenotypes in zebrafish matched to human gene orthologs |
+| Homology |	19,195 |	398 |	Percent identity of human gene homologs across species from Ensembl  |
+| Dosage Sensitivity |	17,426 |	2 |	Prediction scores for gene haplo- and triplo-sensitivity |
