@@ -1,5 +1,5 @@
 ---
-title: 'PanRank <img src="img/WEHI.png" align="right" height="80"/>'
+title: 'PanRank <a href="https://www.wehi.edu.au/laboratory/bahlo-lab/"><img src="img/WEHI.png" align="right" height="70"/></a>'
 ---
 
 [Jacob E. Munro](https://orcid.org/0000-0002-2751-0989), [Mark F. Bennett](https://orcid.org/0000-0002-3561-6804), [Melanie Bahlo](https://orcid.org/0000-0001-5132-0774)
