@@ -359,6 +359,7 @@ function createDataTable(data) {
       $('#data-table').DataTable({
           data: data,
           columns: columns,
+          order: [[4, 'desc']],
           dom: 'frtBip',
           buttons: [
             { extend: 'csvHtml5',   text: 'Export CSV',   title: getFilename },
