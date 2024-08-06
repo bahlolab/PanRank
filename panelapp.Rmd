@@ -1,0 +1,148 @@
+# PanRank - PanelApp Australia <img src="img/WEHI.png" align="right" height="80"/>
+
+[Jacob E. Munro](https://orcid.org/0000-0002-2751-0989), [Mark F. Bennett](https://orcid.org/0000-0002-3561-6804), [Melanie Bahlo](https://orcid.org/0000-0001-5132-0774)
+
+---
+
+[PanelApp](https://panelapp.agha.umccr.org/) is a crowdsourcing tool to allow gene panels to be shared, downloaded, viewed and evaluated by the Scientific Community.
+
+This page contains **PanRank** candidate gene rankings based on gene panels from [PanelApp Australia](https://panelapp.agha.umccr.org/). PanRank scores are between 0 and 1 and represent the predicted probability that a gene is disease-causing with the specified mode of inheritance. The "Inheritance" column indicates the known mode of inheritance used to train the model.
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+
+
+```{r setup, include=FALSE}
+# source('functions.R')
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+library(tidyverse)
+```
+
+```{r, results='asis'}
+paa_names <- read_tsv('data/paa_names.tsv') %>% with(setNames(name, id))
+
+files <- 
+  list.files('data', pattern = '.csv.gz$', full.names = T) %>% 
+  keep(str_detect, 'PAA_') %>% 
+  discard(str_detect, "fixed.csv.gz") %>% 
+  setNames(., str_remove(basename(.), '.csv.gz$'))
+
+names(files) <- paa_names[names(files)]
+# names(files) <- 
+#   names(files) %>% 
+#   str_remove('PAA_') %>% 
+#   str_replace('ALL', 'Epilpesy')
+
+cat(str_c(
+  '<label for="file-select">PanelApp Panel:</label>',
+  '<select id="file-select">',
+  str_c('  <option value="', files, '">', names(files), '</option>', collapse = '\n'),
+  '</select>',
+  sep = '\n'
+))
+```
+
+<div id='table-container'>
+  <table id='data-table' class='display'></table>
+</div>
+
+
+```{js, include=T}
+function loadAndParseCSV(url, callback) {
+    Papa.parse(url, {
+        download: true,
+        header: true,
+        dynamicTyping: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+            callback(results.data);
+        }
+    });
+}
+
+// Join two datasets row-wise
+function joinDataRowWise(data1, data2) {
+    const maxRows = Math.max(data1.length, data2.length);
+    const joinedData = [];
+    for (let i = 0; i < maxRows; i++) {
+        const row1 = data1[i] || {};
+        const row2 = data2[i] || {};
+        const joinedRow = { ...row1, ...row2 };
+        joinedData.push(joinedRow);
+    }
+    return joinedData;
+}
+
+// Create DataTable
+function createDataTable(data, filename) {
+    
+    if ($.fn.DataTable.isDataTable('#data-table')) {
+      let dataTable = $('#data-table').DataTable();
+      dataTable.clear();
+      dataTable.rows.add(data);
+      dataTable.draw();
+    } else {
+      const columns = Object.keys(data[0] || {}).map(key => ({ title: key, data: key }));
+      $('#data-table').DataTable({
+          data: data,
+          columns: columns,
+          dom: 'frtBip',
+          buttons: [
+            { extend: 'csvHtml5',   text: 'Export CSV',   title: getFilename },
+            { extend: 'excelHtml5', text: 'Export Excel', title: getFilename}
+        ],
+      });
+    }
+}
+
+function getFilename() {
+  return 'PanelApp Australia - ' + $('#file-select option:selected').text();
+}
+
+// Load and update data on dropdown change
+async function loadData(url1, url2, filename) {
+    
+    let data1 = [];
+    let data2 = [];
+    
+    loadAndParseCSV(url1, function(parsedData1) {
+      data1 = parsedData1;
+      if (data2.length > 0) {
+        const joinedData = joinDataRowWise(parsedData1, data2);
+        createDataTable(joinedData, filename);
+      }
+    });
+
+    loadAndParseCSV(url2, function(parsedData2) {
+      data2 = parsedData2;
+      if (data1.length > 0) {
+          const joinedData = joinDataRowWise(data1, parsedData2);
+          createDataTable(joinedData, filename);
+      }
+    });
+}
+
+$(document).ready(function() {
+    // Initialize with the first option
+    const url1 = "data/fixed.csv.gz";
+    const initialUrl = $('#file-select').val();
+    const initialFilename = $('#file-select option:selected').text();
+    loadData(url1, initialUrl, initialFilename);
+
+    // Update DataTable when dropdown value changes
+    $('#file-select').change(function() {
+        const selectedUrl = $(this).val();
+        const selectedFilename =  $('#file-select option:selected').text();
+        console.log(selectedFilename);
+        loadData(url1, selectedUrl, selectedFilename);
+    });
+});
+
+```
+

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>genes4epilepsy.knit</title>
+
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PanRank</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="genes4epilepsy.html">Genes4Epilepsy</a>
+</li>
+<li>
+  <a href="panelapp.html">PanelApp</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+
+</div>
+
+
+<div id="panrank---genes4epilepsy" class="section level1">
+<h1>PanRank - Genes4Epilepsy
+<img src="img/WEHI.png" align="right" height="80"/></h1>
+<p><a href="https://orcid.org/0000-0002-2751-0989">Jacob E. Munro</a>,
+<a href="https://orcid.org/0000-0002-3561-6804">Mark F. Bennett</a>, <a
+href="https://orcid.org/0000-0001-5132-0774">Melanie Bahlo</a></p>
+<hr />
+<p><a
+href="https://bahlolab.github.io/Genes4Epilepsy/">Genes4Epilepsy</a> is
+a curated list of monogenic epilepsy genes.</p>
+<p>This page contains <strong>PanRank</strong> candidate gene rankings
+based on gene panels from <a
+href="https://bahlolab.github.io/Genes4Epilepsy/">Genes4Epilepsy</a>.
+PanRank scores are between 0 and 1 and represent the predicted
+probability that a gene is disease-causing with the specified mode of
+inheritance. The “Inheritance” column indicates the known mode of
+inheritance used to train the model.</p>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+<p><label for="file-select">Genes4Epilepsy Phenotype:</label>
+<select id="file-select">
+<option value="data/G4E_ALL.csv.gz">Epilepsy</option>
+<option value="data/G4E_DEE.csv.gz">DEE</option>
+<option value="data/G4E_Focal.csv.gz">Focal</option>
+<option value="data/G4E_GGE.csv.gz">GGE</option>
+<option value="data/G4E_MCD.csv.gz">MCD</option>
+<option value="data/G4E_PME.csv.gz">PME</option> </select></p>
+<div id="table-container">
+<table id="data-table" class="display">
+</table>
+</div>
+<script>
+function loadAndParseCSV(url, callback) {
+    Papa.parse(url, {
+        download: true,
+        header: true,
+        dynamicTyping: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+            callback(results.data);
+        }
+    });
+}
+
+// Join two datasets row-wise
+function joinDataRowWise(data1, data2) {
+    const maxRows = Math.max(data1.length, data2.length);
+    const joinedData = [];
+    for (let i = 0; i < maxRows; i++) {
+        const row1 = data1[i] || {};
+        const row2 = data2[i] || {};
+        const joinedRow = { ...row1, ...row2 };
+        joinedData.push(joinedRow);
+    }
+    return joinedData;
+}
+
+// Create DataTable
+function createDataTable(data, filename) {
+    
+    if ($.fn.DataTable.isDataTable('#data-table')) {
+      let dataTable = $('#data-table').DataTable();
+      dataTable.clear();
+      dataTable.rows.add(data);
+      dataTable.draw();
+    } else {
+      const columns = Object.keys(data[0] || {}).map(key => ({ title: key, data: key }));
+      $('#data-table').DataTable({
+          data: data,
+          columns: columns,
+          dom: 'frtBip',
+          buttons: [
+            { extend: 'csvHtml5',   text: 'Export CSV',   title: getFilename },
+            { extend: 'excelHtml5', text: 'Export Excel', title: getFilename}
+        ],
+      });
+    }
+}
+
+function getFilename() {
+  return 'Genes4Epilepsy - ' + $('#file-select option:selected').text();
+}
+
+// Load and update data on dropdown change
+async function loadData(url1, url2, filename) {
+    
+    let data1 = [];
+    let data2 = [];
+    
+    loadAndParseCSV(url1, function(parsedData1) {
+      data1 = parsedData1;
+      if (data2.length > 0) {
+        const joinedData = joinDataRowWise(parsedData1, data2);
+        createDataTable(joinedData, filename);
+      }
+    });
+
+    loadAndParseCSV(url2, function(parsedData2) {
+      data2 = parsedData2;
+      if (data1.length > 0) {
+          const joinedData = joinDataRowWise(data1, parsedData2);
+          createDataTable(joinedData, filename);
+      }
+    });
+}
+
+$(document).ready(function() {
+    // Initialize with the first option
+    const url1 = "data/fixed.csv.gz";
+    const initialUrl = $('#file-select').val();
+    const initialFilename = $('#file-select option:selected').text();
+    loadData(url1, initialUrl, initialFilename);
+
+    // Update DataTable when dropdown value changes
+    $('#file-select').change(function() {
+        const selectedUrl = $(this).val();
+        const selectedFilename =  $('#file-select option:selected').text();
+        console.log(selectedFilename);
+        loadData(url1, selectedUrl, selectedFilename);
+    });
+});
+
+</script>
+<p><strong>Note:</strong> “GGE” and “Focal” phenotypes have insufficient
+numbers of recessively inherited genes for training so no predictions
+are made.</p>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
