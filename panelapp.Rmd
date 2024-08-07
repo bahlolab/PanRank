@@ -8,7 +8,7 @@ title: 'PanRank - PanelApp Australia <a href="https://www.wehi.edu.au/laboratory
 
 [PanelApp](https://panelapp.agha.umccr.org/) is a crowdsourcing tool to allow gene panels to be shared, downloaded, viewed and evaluated by the Scientific Community.
 
-This page contains **PanRank** candidate gene rankings based on gene panels from [PanelApp Australia](https://panelapp.agha.umccr.org/). PanRank scores are between 0 and 1 and represent the predicted probability that a gene is disease-causing with the specified mode of inheritance. The "Inheritance" column indicates the known mode of inheritance used to train the model.
+This page contains **PanRank** candidate gene rankings based on gene panels from [PanelApp Australia](https://panelapp.agha.umccr.org/). PanRank scores are between 0 and 1 and represent the predicted probability that a gene is disease-causing with the specified mode of inheritance. The "Known Inheritance" column indicates the known mode of inheritance used to train the model.
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>

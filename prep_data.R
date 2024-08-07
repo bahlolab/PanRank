@@ -17,14 +17,14 @@ DATA <-
   select(
     panel, 
     `Ensembl` = gene_id, 
-    Inheritance = train_class,
+    `Known Inheritance` = train_class,
     `PanRank Recessive` = response_REC,
     `PanRank Dominant`  = response_DOM
   ) %>% 
-  mutate(Inheritance = case_when(
-    Inheritance == 'NEG' ~ '-',
-    Inheritance == 'DOM' ~ 'Dominant',
-    Inheritance == 'REC' ~ 'Recessive',
+  mutate(`Known Inheritance` = case_when(
+    `Known Inheritance` == 'NEG' ~ '-',
+    `Known Inheritance` == 'DOM' ~ 'Dominant',
+    `Known Inheritance` == 'REC' ~ 'Recessive',
     TRUE                 ~ 'Other'
   )) %>% 
   complete(panel, Ensembl) %>% 
@@ -38,7 +38,7 @@ DATA <-
   map(function(x) {
     list(
       fixed  = select(x, Symbol, Ensembl),
-      scores = select(x, Inheritance, starts_with('PanRank'))
+      scores = select(x, `Known Inheritance`, starts_with('PanRank'))
     )
   })
 

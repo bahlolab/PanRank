@@ -8,7 +8,7 @@ title: 'PanRank - Genes4Epilepsy <a href="https://www.wehi.edu.au/laboratory/bah
 
 [Genes4Epilepsy](https://bahlolab.github.io/Genes4Epilepsy/) is a curated list of monogenic epilepsy genes.
 
-This page contains **PanRank** candidate gene rankings based on gene panels from [Genes4Epilepsy](https://bahlolab.github.io/Genes4Epilepsy/). PanRank scores are between 0 and 1 and represent the predicted probability that a gene is disease-causing with the specified mode of inheritance. The "Inheritance" column indicates the known mode of inheritance used to train the model.
+This page contains **PanRank** candidate gene rankings based on gene panels from [Genes4Epilepsy](https://bahlolab.github.io/Genes4Epilepsy/). PanRank scores are between 0 and 1 and represent the predicted probability that a gene is disease-causing with the specified mode of inheritance. The "Known Inheritance" column indicates the known mode of inheritance used to train the model.
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
