@@ -1,5 +1,6 @@
 ---
 title: 'PanRank - Genes4Epilepsy <a href="https://www.wehi.edu.au/laboratory/bahlo-lab/"><img src="img/WEHI.png" align="right" height="70"/></a>'
+css: styles.css
 ---
 
 [Jacob E. Munro](https://orcid.org/0000-0002-2751-0989), [Mark F. Bennett](https://orcid.org/0000-0002-3561-6804), [Melanie Bahlo](https://orcid.org/0000-0001-5132-0774)
@@ -130,7 +131,14 @@ function renderFun(key) {
   }
   if ( key === 'Symbol' ) {
     return function(data) {
-      return `<a href="http://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg38&position=${data}" target="_blank">${data}</a>`;
+      return '<div class="dropdown">' +
+        `<a class="dropbtn">${data}</a>` +
+        '<div class="dropdown-content">' +
+        `<a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=${data}" target="_blank">GeneCards</a><br>` +
+        `<a href="https://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg38&position=${data}" target="_blank">UCSC</a><br>` +
+        `<a href="https://gtexportal.org/home/gene/${data}" target="_blank">GTEx</a><br>` +
+        `<a href="https://gnomad.broadinstitute.org/gene/${data}" target="_blank">gnomAD</a>` +
+        '</div></div>';
     };
   }
 }
