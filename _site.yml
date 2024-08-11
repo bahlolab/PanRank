@@ -1,13 +1,5 @@
 name: "PanRank"
 output_dir: docs
-navbar:
-  title: "PanRank"
-  left:
-    - text: "Home"
-      href: index.html
-    - text: "Genes4Epilepsy"
-      href: genes4epilepsy.html
-    - text: "PanelApp"
-      href: panelapp.html
-  custom:
-    css: styles.css
+output:
+  html_document:
+    css: styles.css 

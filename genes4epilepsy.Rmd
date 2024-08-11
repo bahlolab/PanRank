@@ -1,5 +1,5 @@
 ---
-title: 'PanRank - Genes4Epilepsy <a href="https://www.wehi.edu.au/laboratory/bahlo-lab/"><img src="img/WEHI.png" align="right" height="70"/></a>'
+title: 'PanRank - Genes4Epilepsy'
 css: styles.css
 ---
 

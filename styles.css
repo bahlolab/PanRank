@@ -22,3 +22,26 @@
   color: #3e8e41;
   text-decoration: none;
 }
+
+.navbar-nav {
+  padding: 0;
+  margin: 0;
+}
+
+.navbar-collapse {
+  display: flex;
+  align-items: center; /* Align children (including .navbar-right) in the middle */
+  justify-content: space-between; /* Space out left and right navbars */
+}
+
+.navbar-nav.navbar-right {
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+
+.navbar-nav.navbar-right > li > a {
+  padding: 1px 1px;
+  display: flex;
+  align-items: center;
+} 
