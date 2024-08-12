@@ -285,147 +285,40 @@ inheritance used to train the model.</p>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
-<p><label for="file-select">Genes4Epilepsy Phenotype:</label>
-<select id="file-select">
-<option value="data/G4E_ALL.csv.gz">Epilepsy</option>
-<option value="data/G4E_DEE.csv.gz">DEE</option>
-<option value="data/G4E_Focal.csv.gz">Focal</option>
-<option value="data/G4E_GGE.csv.gz">GGE</option>
-<option value="data/G4E_MCD.csv.gz">MCD</option>
-<option value="data/G4E_PME.csv.gz">PME</option> </select></p>
+<script src="script.js"></script>
+<p><link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css"></p>
 <div id="table-container">
 <table id="data-table" class="display">
 </table>
 </div>
 <script>
-function loadAndParseCSV(url, callback) {
-    fetch(url)
-      .then(response => response.arrayBuffer())
-      .then(buffer => {
-        const firstBytes = new Uint8Array(buffer.slice(0, 2));
-        const isGzip = firstBytes[0] === 0x1F && firstBytes[1] === 0x8B;
-        let decompressed;
-        if (isGzip) {
-          decompressed = pako.inflate(buffer, { to: 'string' });
-        } else {
-          decompressed = new TextDecoder().decode(buffer);
-        }
-        Papa.parse(decompressed, {
-        header: true,
-        dynamicTyping: true,
-        skipEmptyLines: true,
-        complete: function(results) {
-            callback(results.data);
-          }
-        });
-      })
-}
-
-// Join two datasets row-wise
-function joinDataRowWise(data1, data2) {
-    const maxRows = Math.max(data1.length, data2.length);
-    const joinedData = [];
-    for (let i = 0; i < maxRows; i++) {
-        const row1 = data1[i] || {};
-        const row2 = data2[i] || {};
-        const joinedRow = { ...row1, ...row2 };
-        joinedData.push(joinedRow);
-    }
-    return joinedData;
-}
-
-// Create DataTable
-function createDataTable(data) {
-    
-    if ($.fn.DataTable.isDataTable('#data-table')) {
-      let dataTable = $('#data-table').DataTable();
-      dataTable.clear();
-      dataTable.rows.add(data);
-      dataTable.draw();
-    } else {
-      const columns = Object.keys(data[0] || {}).map(key => ({ 
-          title: key,
-          data: key,
-          render: renderFun(key)
-      }));
-      $('#data-table').DataTable({
-          data: data,
-          columns: columns,
-          order: [[4, 'desc']],
-          dom: 'frtBip',
-          buttons: [
-            { extend: 'csvHtml5',   text: 'Export CSV',   title: getFilename },
-            { extend: 'excelHtml5', text: 'Export Excel', title: getFilename}
-        ],
-      });
-    }
-}
-
-function getFilename() {
-  return 'Genes4Epilepsy - ' + $('#file-select option:selected').text();
-}
-
-function renderFun(key) {
-  if ( key === 'Ensembl' ) {
-    return function(data) {
-      return `<a href="https://ensembl.org/Homo_sapiens/Gene/Summary?g=${data}" target="_blank">${data}</a>`;
-    };
+  function showMessage() {
+            alert('Hello, this is an inline JavaScript function!');
   }
-  if ( key === 'Symbol' ) {
-    return function(data) {
-      return '<div class="dropdown">' +
-        `<a class="dropbtn">${data}</a>` +
-        '<div class="dropdown-content">' +
-        `<a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=${data}" target="_blank">GeneCards</a><br>` +
-        `<a href="https://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg38&position=${data}" target="_blank">UCSC</a><br>` +
-        `<a href="https://gtexportal.org/home/gene/${data}" target="_blank">GTEx</a><br>` +
-        `<a href="https://gnomad.broadinstitute.org/gene/${data}" target="_blank">gnomAD</a>` +
-        '</div></div>';
-    };
-  }
+</script>
+<script>
+function makeSelect() {
+return '<label for="file-select">Phenotype:</label>' +
+'<select id="file-select" class="custom-select">' +
+'<option value="data/G4E_ALL.csv.gz">Epilepsy</option> ' +
+'<option value="data/G4E_DEE.csv.gz">DEE</option> ' +
+'<option value="data/G4E_Focal.csv.gz">Focal</option> ' +
+'<option value="data/G4E_GGE.csv.gz">GGE</option> ' +
+'<option value="data/G4E_MCD.csv.gz">MCD</option> ' +
+'<option value="data/G4E_PME.csv.gz">PME</option> ' +
+'</select>';
 }
-
-// Load and update data on dropdown change
-async function loadData(url1, url2) {
-    
-    let data1 = [];
-    let data2 = [];
-    
-    loadAndParseCSV(url1, function(parsedData1) {
-      data1 = parsedData1;
-      if (data2.length > 0) {
-        const joinedData = joinDataRowWise(parsedData1, data2);
-        createDataTable(joinedData);
-      }
-    });
-
-    loadAndParseCSV(url2, function(parsedData2) {
-      data2 = parsedData2;
-      if (data1.length > 0) {
-          const joinedData = joinDataRowWise(data1, parsedData2);
-          createDataTable(joinedData);
-      }
-    });
-}
-
+</script>
+<script>
 $(document).ready(function() {
-    // Initialize with the first option
-    const url1 = "data/fixed.csv.gz";
-    const initialUrl = $('#file-select').val();
-    loadData(url1, initialUrl);
-
-    // Update DataTable when dropdown value changes
-    $('#file-select').change(function() {
-        const selectedUrl = $(this).val();
-        loadData(url1, selectedUrl);
-    });
+const fixedUrl = "data/fixed.csv.gz";
+const initUrl = "data/G4E_ALL.csv.gz";
+loadData(fixedUrl, initUrl);
 });
-
 </script>
 <p><strong>Note:</strong> “GGE” and “Focal” phenotypes have insufficient
 numbers of recessively inherited genes for training so no predictions
