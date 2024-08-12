@@ -51,12 +51,23 @@ function createDataTable(data) {
       $('#data-table').DataTable({
           data: data,
           columns: columns,
-          order: [[4, 'desc']],
+          order: [[5, 'desc']],
           dom: '<"top"lf>rtBip',//'frtBip',
           buttons: [
             { extend: 'csvHtml5',   text: 'Export CSV',   title: getFilename },
             { extend: 'excelHtml5', text: 'Export Excel', title: getFilename}
           ],
+          drawCallback: function() {
+            var summaries = document.querySelectorAll('[id^="gene-dropdown"]');
+            console.log(summaries);
+            summaries.forEach(element => {
+                // Extract gene ID from the element's ID
+                const geneId = element.id.replace('gene-dropdown-', '');
+                element.addEventListener('mouseover', function() {
+                  fetchGeneSummary(geneId);
+                });
+            });
+          },
           initComplete: function() {
             // Create the custom select dropdown
             var select = $(makeSelect())
@@ -81,11 +92,21 @@ function renderFun(key) {
       return `<a href="https://ensembl.org/Homo_sapiens/Gene/Summary?g=${data}" target="_blank">${data}</a>`;
     };
   }
+  if ( key === 'NCBI Gene' ) {
+    return function(data) {
+      return '<div class="dropdown">' +
+        `<a href="https://www.ncbi.nlm.nih.gov/gene/${data}" target="_blank" class="dropbtn" id="gene-dropdown-${data}">${data}</a>` +
+        '<div class="dropdown-content ncbi-gene">' +
+        `<div id="gene-summary-${data}"></div>` +
+        '</div>';
+    };
+  }
   if ( key === 'Symbol' ) {
     return function(data) {
       return '<div class="dropdown">' +
         `<a class="dropbtn">${data}</a>` +
         '<div class="dropdown-content">' +
+        '<div id="gene-summary"></div>' +
         `<a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=${data}" target="_blank">GeneCards</a><br>` +
         `<a href="https://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg38&position=${data}" target="_blank">UCSC</a><br>` +
         `<a href="https://gtexportal.org/home/gene/${data}" target="_blank">GTEx</a><br>` +
@@ -94,6 +115,26 @@ function renderFun(key) {
     };
   }
 }
+
+function fetchGeneSummary(geneId) {
+    var apiUrl = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=gene&id=' + geneId + '&retmode=json';
+
+    fetch(apiUrl)
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Network response was not ok');
+          }
+          return response.json();
+      })
+      .then(data => {
+          var geneSummary = data.result[geneId]?.summary || 'No summary available';
+          document.getElementById('gene-summary-' + geneId).innerText = geneSummary;
+      })
+      .catch(error => {
+          document.getElementById('gene-summary-' + geneId).innerText = 'Error fetching data.';
+      });
+}
+
 // Load and update data on dropdown change
 async function loadData(url1, url2) {
     let data1 = [];

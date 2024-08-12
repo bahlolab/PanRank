@@ -32,12 +32,15 @@ DATA <-
   mutate(across(starts_with('PanRank'), signif, 3)) %>% 
   mutate(across(starts_with('PanRank'), as.character)) %>% 
   mutate(across(starts_with('PanRank'), replace_na, '')) %>% 
-  mutate(Symbol = cavalier::hgnc_ensembl2sym(`Ensembl`)) %>%
+  mutate(
+    Symbol      = cavalier::hgnc_ensembl2sym(`Ensembl`),
+    `NCBI Gene` = cavalier::hgnc_ensembl2entrez(`Ensembl`)
+    ) %>%
   arrange(panel, Symbol) %>% 
   split.data.frame(.$panel) %>% 
   map(function(x) {
     list(
-      fixed  = select(x, Symbol, Ensembl),
+      fixed  = select(x, Symbol,`NCBI Gene`, Ensembl),
       scores = select(x, `Known Inheritance`, starts_with('PanRank'))
     )
   })

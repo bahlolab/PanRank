@@ -15,6 +15,11 @@
   z-index: 1;
 }
 
+.dropdown-content.ncbi-gene {
+  width: 500px;
+  max-width: 100vp;
+}
+
 .dropdown:hover .dropdown-content {display: block;}
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
