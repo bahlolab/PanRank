@@ -108,6 +108,7 @@ function renderFun(key) {
         '<div class="dropdown-content">' +
         '<div id="gene-summary"></div>' +
         `<a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=${data}" target="_blank">GeneCards</a><br>` +
+        `<a href="https://panelapp.agha.umccr.org/panels/entities/${data}" target="_blank">PanelApp</a><br>` +
         `<a href="https://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg38&position=${data}" target="_blank">UCSC</a><br>` +
         `<a href="https://gtexportal.org/home/gene/${data}" target="_blank">GTEx</a><br>` +
         `<a href="https://gnomad.broadinstitute.org/gene/${data}" target="_blank">gnomAD</a>` +
