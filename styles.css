@@ -54,8 +54,8 @@ select#file-select {
 }
 
 select#subset {
-  margin-left: 5px;
-  margin-right: 10px;
+  margin-left: 3px;
+  margin-right: 7px;
 }
 
 p {
@@ -64,4 +64,21 @@ p {
 
 .gene-summary {
   text-align: justify;
+}
+
+.dataTables_length {
+    height: 30px;
+}
+
+.dataTables_length select {
+    height: 27px;
+}
+
+.dataTables_filter {
+    height: 30px;
+}
+
+.dataTables_filter input {
+    width: 125px;
+    height: 27px;
 }
