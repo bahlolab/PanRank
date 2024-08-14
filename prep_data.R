@@ -7,6 +7,23 @@ write_csv_gz <- function(data, fn) {
   close(gz_con)
 } 
 
+MIM <-
+  read_tsv(
+    'https://www.omim.org/static/omim/data/mim2gene.txt',
+    skip = 4,
+    col_names = c('mim_id', 'mim_type', 'entrez', 'symbol', 'ensembl')
+  ) %>% 
+  filter(mim_type == 'gene') %>% 
+  select(-mim_type) %>% 
+  select(`Ensembl` = ensembl,
+         OMIM = mim_id) %>% 
+  na.omit() %>% 
+  distinct() %>% 
+  arrange(as.integer(OMIM)) %>% 
+  group_by(Ensembl) %>% 
+  slice(1) %>% 
+  ungroup()
+
 DATA <-
   read_tsv('~/dev/PanRank/PanRankNF/run/output-pub-240806/panrank_scores.tsv') %>% 
   select(panel, path) %>% 
@@ -36,11 +53,12 @@ DATA <-
     Symbol      = cavalier::hgnc_ensembl2sym(`Ensembl`),
     `NCBI Gene` = cavalier::hgnc_ensembl2entrez(`Ensembl`)
     ) %>%
+  left_join(MIM, by = 'Ensembl') %>% 
   arrange(panel, Symbol) %>% 
   split.data.frame(.$panel) %>% 
   map(function(x) {
     list(
-      fixed  = select(x, Symbol,`NCBI Gene`, Ensembl),
+      fixed  = select(x, Symbol, `NCBI Gene`, Ensembl, OMIM),
       scores = select(x, `Known Inheritance`, starts_with('PanRank'))
     )
   })

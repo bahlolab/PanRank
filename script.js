@@ -43,11 +43,13 @@ function createDataTable(data) {
       dataTable.rows.add(data);
       dataTable.draw();
     } else {
-      const columns = Object.keys(data[0] || {}).map(key => ({
-          title: key,
-          data: key,
-          render: renderFun(key)
-      }));
+      const columns = Object.keys(data[0] || {})
+          .filter(key => key !== 'OMIM')
+          .map(key => ({
+              title: key,
+              data: key,
+              render: renderFun(key)
+          }));
       $('#data-table').DataTable({
           data: data,
           columns: columns,
@@ -119,11 +121,12 @@ function renderFun(key) {
         return '<div class="dropdown">' +
           `<a class="dropbtn" id="gene-dropdown-${row["NCBI Gene"]}">${data}</a>` +
           '<div class="dropdown-content">' +
-          `<a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=${data}" target="_blank" class="button">GeneCards</a>` +
           `<a href="https://panelapp.agha.umccr.org/panels/entities/${data}" target="_blank" class="button">PanelApp</a>` +
-          `<a href="https://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg38&position=${row["Ensembl"]}" target="_blank" class="button">UCSC</a>` +
+          (row["OMIM"] ? `<a href="https://www.omim.org/entry/${row["OMIM"]}" target="_blank" class="button">OMIM</a>` : '') +
           `<a href="https://gtexportal.org/home/gene/${row["Ensembl"]}" target="_blank" class="button">GTEx</a>` +
-          `<a href="https://gnomad.broadinstitute.org/gene/${row["Ensembl"]}" target="_blank" class="button">gnomAD</a><br>` +
+          `<a href="https://gnomad.broadinstitute.org/gene/${row["Ensembl"]}" target="_blank" class="button">gnomAD</a>` +
+          `<a href="https://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg38&position=${row["Ensembl"]}" target="_blank" class="button">UCSC</a>` +
+          `<a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=${data}" target="_blank" class="button">GeneCards</a><br>` +
           `<div class="gene-summary" id="gene-summary-${row["NCBI Gene"]}"></div>` +
           '</div></div>';
       }
