@@ -54,8 +54,8 @@ function createDataTable(data) {
           order: [[5, 'desc']],
           dom: '<"top"lf>rtBip',//'frtBip',
           buttons: [
-            { extend: 'csvHtml5',   text: 'Export CSV',   title: getFilename },
-            { extend: 'excelHtml5', text: 'Export Excel', title: getFilename}
+            { extend: 'csvHtml5',   text: 'Export CSV',   title: getFilename, exportOptions: {orthogonal: 'export'}},
+            { extend: 'excelHtml5', text: 'Export Excel', title: getFilename, exportOptions: {orthogonal: 'export'}}
           ],
           drawCallback: function() {
             var summaries = document.querySelectorAll('[id^="gene-dropdown"]');
@@ -114,17 +114,20 @@ function renderFun(key) {
   }
   if ( key === 'Symbol' ) {
     return function(data, type, row) {
-      return '<div class="dropdown">' +
-        `<a class="dropbtn" id="gene-dropdown-${row["NCBI Gene"]}">${data}</a>` +
-        '<div class="dropdown-content">' +
-        '<div id="gene-summary"></div>' +
-        `<a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=${data}" target="_blank">GeneCards</a> | ` +
-        `<a href="https://panelapp.agha.umccr.org/panels/entities/${data}" target="_blank">PanelApp</a> | ` +
-        `<a href="https://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg38&position=${row["Ensembl"]}" target="_blank">UCSC</a> | ` +
-        `<a href="https://gtexportal.org/home/gene/${row["Ensembl"]}" target="_blank">GTEx</a> | ` +
-        `<a href="https://gnomad.broadinstitute.org/gene/${row["Ensembl"]}" target="_blank">gnomAD</a><br>` +
-        `<div class="gene-summary" id="gene-summary-${row["NCBI Gene"]}"></div>` +
-        '</div></div>';
+      console.log(type);
+      if (type === 'display') {
+        return '<div class="dropdown">' +
+          `<a class="dropbtn" id="gene-dropdown-${row["NCBI Gene"]}">${data}</a>` +
+          '<div class="dropdown-content">' +
+          `<a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=${data}" target="_blank">GeneCards</a> | ` +
+          `<a href="https://panelapp.agha.umccr.org/panels/entities/${data}" target="_blank">PanelApp</a> | ` +
+          `<a href="https://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg38&position=${row["Ensembl"]}" target="_blank">UCSC</a> | ` +
+          `<a href="https://gtexportal.org/home/gene/${row["Ensembl"]}" target="_blank">GTEx</a> | ` +
+          `<a href="https://gnomad.broadinstitute.org/gene/${row["Ensembl"]}" target="_blank">gnomAD</a><br>` +
+          `<div class="gene-summary" id="gene-summary-${row["NCBI Gene"]}"></div>` +
+          '</div></div>';
+      }
+      return data;
     };
   }
 }
