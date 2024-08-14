@@ -8,8 +8,8 @@ Bahlo](https://orcid.org/0000-0001-5132-0774)
 
 ---
 
-[Genes4Epilepsy](https://bahlolab.github.io/Genes4Epilepsy/) is a curated list
-of monogenic epilepsy genes.  
+[Genes4Epilepsy](https://doi.org/10.1111/epi.17547) is a curated list
+of monogenic epilepsy genes.
 
 This page contains **PanRank** candidate gene
 rankings based on gene panels from
