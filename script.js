@@ -68,15 +68,31 @@ function createDataTable(data) {
             });
           },
           initComplete: function() {
-            // Create the custom select dropdown
+            var table = this.api();
+            
+            var subset = $(
+                '<label for="subset">Subset:</label>' +
+                '<select id="subset" class="custom-select">' +
+                '<option value="-">Novel Only</option>' +
+                '<option value="">All Genes</option>' +
+                '</select>')
+                .prependTo($(".dataTables_length"))
+                .on('change', function() {
+                    var filter = $(this).val();
+                    table.column(3)
+                         .search(filter)
+                         .draw();
+                });
+            subset.trigger('change');
+        
             var select = $(makeSelect())
-              .prependTo($(".dataTables_length"))
-              .on('change', function() {
-                var url1 = "data/fixed.csv.gz";
-                var selectedUrl = $(this).val();
-                loadData(url1, selectedUrl);
-              });
-          }
+                .prependTo($(".dataTables_length"))
+                .on('change', function() {
+                    var url1 = "data/fixed.csv.gz";
+                    var selectedUrl = $(this).val();
+                    loadData(url1, selectedUrl);
+                });
+        }
       });
     }
 }
@@ -116,8 +132,7 @@ function renderFun(key) {
 function fetchGeneSummary(geneId) {
     var apiUrl = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=gene&id=' + geneId + '&retmode=json';
     var text = document.getElementById('gene-summary-' + geneId).innerText;
-    console.log('text:' + text);
-    
+
     if (text === '' || text.startsWith('Error')) {
       fetch(apiUrl)
         .then(response => {

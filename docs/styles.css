@@ -50,5 +50,10 @@
 
 select#file-select {
   margin-left: 5px;
-  margin-right: 30px;
+  margin-right: 10px;
+}
+
+select#subset {
+  margin-left: 5px;
+  margin-right: 10px;
 }
