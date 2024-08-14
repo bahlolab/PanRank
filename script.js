@@ -123,7 +123,7 @@ function renderFun(key) {
         `<a href="https://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg38&position=${row["Ensembl"]}" target="_blank">UCSC</a> | ` +
         `<a href="https://gtexportal.org/home/gene/${row["Ensembl"]}" target="_blank">GTEx</a> | ` +
         `<a href="https://gnomad.broadinstitute.org/gene/${row["Ensembl"]}" target="_blank">gnomAD</a><br>` +
-        `<div id="gene-summary-${row["NCBI Gene"]}"></div>` +
+        `<div class="gene-summary" id="gene-summary-${row["NCBI Gene"]}"></div>` +
         '</div></div>';
     };
   }
