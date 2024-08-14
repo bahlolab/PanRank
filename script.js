@@ -119,11 +119,11 @@ function renderFun(key) {
         return '<div class="dropdown">' +
           `<a class="dropbtn" id="gene-dropdown-${row["NCBI Gene"]}">${data}</a>` +
           '<div class="dropdown-content">' +
-          `<a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=${data}" target="_blank">GeneCards</a> | ` +
-          `<a href="https://panelapp.agha.umccr.org/panels/entities/${data}" target="_blank">PanelApp</a> | ` +
-          `<a href="https://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg38&position=${row["Ensembl"]}" target="_blank">UCSC</a> | ` +
-          `<a href="https://gtexportal.org/home/gene/${row["Ensembl"]}" target="_blank">GTEx</a> | ` +
-          `<a href="https://gnomad.broadinstitute.org/gene/${row["Ensembl"]}" target="_blank">gnomAD</a><br>` +
+          `<a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=${data}" target="_blank" class="button">GeneCards</a>` +
+          `<a href="https://panelapp.agha.umccr.org/panels/entities/${data}" target="_blank" class="button">PanelApp</a>` +
+          `<a href="https://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg38&position=${row["Ensembl"]}" target="_blank" class="button">UCSC</a>` +
+          `<a href="https://gtexportal.org/home/gene/${row["Ensembl"]}" target="_blank" class="button">GTEx</a>` +
+          `<a href="https://gnomad.broadinstitute.org/gene/${row["Ensembl"]}" target="_blank" class="button">gnomAD</a><br>` +
           `<div class="gene-summary" id="gene-summary-${row["NCBI Gene"]}"></div>` +
           '</div></div>';
       }
