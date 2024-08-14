@@ -48,16 +48,6 @@
   align-items: center;
 }
 
-select#file-select {
-  margin-left: 5px;
-  margin-right: 10px;
-}
-
-select#subset {
-  margin-left: 3px;
-  margin-right: 7px;
-}
-
 p {
   text-align: justify;
 }
@@ -81,4 +71,15 @@ p {
 .dataTables_filter input {
     width: 125px;
     height: 27px;
+}
+
+select#file-select {
+  margin-left: 5px;
+  margin-right: 10px;
+  max-width: 150px;
+}
+
+select#subset {
+  margin-left: 3px;
+  margin-right: 7px;
 }
