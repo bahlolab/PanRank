@@ -6,7 +6,7 @@ title: 'PanRank'
 
 ---
 
-PanRank is a method for ranking candidate disease genes based on a known disease gene panel developed by the [Bahlo Lab](https://www.wehi.edu.au/laboratory/bahlo-lab/). Rankings are made by a logistic regression model. PanRank and this website are a work in progress and full source code will be made available through GitHub at a later date. Precomputed rankings are available for [Genes4Epilepsy](genes4epilepsy.html) and select [PanelApp panels](panelapp.html).
+PanRank is a method for ranking candidate disease genes based on a known disease gene panel developed by the [Bahlo Lab](https://www.wehi.edu.au/laboratory/bahlo-lab/). Rankings are made by a logistic regression model. PanRank is a work in progress and full source code will be made available through GitHub at a later date. Precomputed rankings are available for [Genes4Epilepsy](genes4epilepsy.html) and select [PanelApp panels](panelapp.html).
 
 ---
 

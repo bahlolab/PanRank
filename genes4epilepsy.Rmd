@@ -2,18 +2,11 @@
 title: 'PanRank - Genes4Epilepsy'
 css: styles.css
 ---
-[Jacob E. Munro](https://orcid.org/0000-0002-2751-0989), [Mark F.
-Bennett](https://orcid.org/0000-0002-3561-6804), [Melanie
-Bahlo](https://orcid.org/0000-0001-5132-0774)
-
----
-
-[Genes4Epilepsy](https://doi.org/10.1111/epi.17547) is a curated list
-of monogenic epilepsy genes.
 
 This page contains **PanRank** candidate gene
 rankings based on gene panels from
-[Genes4Epilepsy](https://bahlolab.github.io/Genes4Epilepsy/). PanRank scores are
+[Genes4Epilepsy](https://bahlolab.github.io/Genes4Epilepsy/), a curated list
+of monogenic epilepsy genes. PanRank scores are
 between 0 and 1 and represent the predicted probability that a gene is
 disease-causing with the specified mode of inheritance. The "Known Inheritance"
 column indicates the known mode of inheritance used to train the model.  
@@ -83,3 +76,9 @@ cat(
 
 
 **Note:** "GGE" and "Focal" phenotypes have insufficient numbers of recessively inherited genes for training so no predictions are made.
+
+---
+
+PanRank is developed by [Jacob E. Munro](https://orcid.org/0000-0002-2751-0989), [Mark F.
+Bennett](https://orcid.org/0000-0002-3561-6804) and [Melanie
+Bahlo](https://orcid.org/0000-0001-5132-0774)

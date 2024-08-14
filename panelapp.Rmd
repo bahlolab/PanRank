@@ -3,13 +3,7 @@ title: 'PanRank - PanelApp Australia'
 css: styles.css
 ---
 
-[Jacob E. Munro](https://orcid.org/0000-0002-2751-0989), [Mark F. Bennett](https://orcid.org/0000-0002-3561-6804), [Melanie Bahlo](https://orcid.org/0000-0001-5132-0774)
-
----
-
-[PanelApp](https://panelapp.agha.umccr.org/) is a crowdsourcing tool to allow gene panels to be shared, downloaded, viewed and evaluated by the Scientific Community.
-
-This page contains **PanRank** candidate gene rankings based on gene panels from [PanelApp Australia](https://panelapp.agha.umccr.org/). PanRank scores are between 0 and 1 and represent the predicted probability that a gene is disease-causing with the specified mode of inheritance. The "Known Inheritance" column indicates the known mode of inheritance used to train the model.
+This page contains **PanRank** candidate gene rankings based on gene panels from [PanelApp Australia](https://panelapp.agha.umccr.org/). [PanelApp](https://panelapp.agha.umccr.org/) is a crowdsourcing tool to allow gene panels to be shared, downloaded, viewed and evaluated by the Scientific Community. PanRank scores are between 0 and 1 and represent the predicted probability that a gene is disease-causing with the specified mode of inheritance. The "Known Inheritance" column indicates the known mode of inheritance used to train the model.
 
 
 ```{r setup, include=FALSE}
@@ -74,4 +68,8 @@ cat(
 )
 ```
 
+---
 
+PanRank is developed by [Jacob E. Munro](https://orcid.org/0000-0002-2751-0989), [Mark F.
+Bennett](https://orcid.org/0000-0002-3561-6804) and [Melanie
+Bahlo](https://orcid.org/0000-0001-5132-0774)

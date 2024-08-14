@@ -266,20 +266,15 @@ $(document).ready(function () {
 </div>
 
 
-<p><a href="https://orcid.org/0000-0002-2751-0989">Jacob E. Munro</a>,
-<a href="https://orcid.org/0000-0002-3561-6804">Mark F. Bennett</a>, <a
-href="https://orcid.org/0000-0001-5132-0774">Melanie Bahlo</a></p>
-<hr />
-<p><a href="https://panelapp.agha.umccr.org/">PanelApp</a> is a
-crowdsourcing tool to allow gene panels to be shared, downloaded, viewed
-and evaluated by the Scientific Community.</p>
 <p>This page contains <strong>PanRank</strong> candidate gene rankings
 based on gene panels from <a
-href="https://panelapp.agha.umccr.org/">PanelApp Australia</a>. PanRank
-scores are between 0 and 1 and represent the predicted probability that
-a gene is disease-causing with the specified mode of inheritance. The
-“Known Inheritance” column indicates the known mode of inheritance used
-to train the model.</p>
+href="https://panelapp.agha.umccr.org/">PanelApp Australia</a>. <a
+href="https://panelapp.agha.umccr.org/">PanelApp</a> is a crowdsourcing
+tool to allow gene panels to be shared, downloaded, viewed and evaluated
+by the Scientific Community. PanRank scores are between 0 and 1 and
+represent the predicted probability that a gene is disease-causing with
+the specified mode of inheritance. The “Known Inheritance” column
+indicates the known mode of inheritance used to train the model.</p>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.min.js"></script>
@@ -314,6 +309,11 @@ const initUrl = "data/PAA_137.csv.gz";
 loadData(fixedUrl, initUrl);
 });
 </script>
+<hr />
+<p>PanRank is developed by <a
+href="https://orcid.org/0000-0002-2751-0989">Jacob E. Munro</a>, <a
+href="https://orcid.org/0000-0002-3561-6804">Mark F. Bennett</a> and <a
+href="https://orcid.org/0000-0001-5132-0774">Melanie Bahlo</a></p>
 
 
 
