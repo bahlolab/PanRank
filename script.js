@@ -116,7 +116,6 @@ function renderFun(key) {
   }
   if ( key === 'Symbol' ) {
     return function(data, type, row) {
-      console.log(type);
       if (type === 'display') {
         return '<div class="dropdown">' +
           `<a class="dropbtn" id="gene-dropdown-${row["NCBI Gene"]}">${data}</a>` +
