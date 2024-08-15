@@ -126,6 +126,7 @@ function renderFun(key) {
           `<a href="https://gnomad.broadinstitute.org/gene/${row["Ensembl"]}" target="_blank" class="button">gnomAD</a>` +
           `<a href="https://genome.ucsc.edu/cgi-bin/hgTracks?org=human&db=hg38&position=${row["Ensembl"]}" target="_blank" class="button">UCSC</a>` +
           `<a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=${data}" target="_blank" class="button">GeneCards</a><br>` +
+          `<font color="#49A942"><b><div class="gene-title" id="gene-title-${row["NCBI Gene"]}"></div></b></font>` +
           `<div class="gene-summary" id="gene-summary-${row["NCBI Gene"]}"></div>` +
           '</div></div>';
       }
@@ -138,7 +139,7 @@ function fetchGeneSummary(geneId) {
     var apiUrl = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=gene&id=' + geneId + '&retmode=json';
     var text = document.getElementById('gene-summary-' + geneId).innerText;
 
-    if (text === '' || text.startsWith('Error')) {
+    if (text === '') {
       fetch(apiUrl)
         .then(response => {
             if (!response.ok) {
@@ -147,7 +148,9 @@ function fetchGeneSummary(geneId) {
             return response.json();
         })
         .then(data => {
-            var geneSummary = data.result[geneId]?.summary || 'No summary available';
+            var geneTitle = data.result[geneId]?.description || 'Title unavailable';
+            var geneSummary = data.result[geneId]?.summary || 'Summary unavailable';
+            document.getElementById('gene-title-' + geneId).innerText = geneTitle;
             document.getElementById('gene-summary-' + geneId).innerText = geneSummary;
         })
         .catch(error => {
