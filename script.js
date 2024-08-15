@@ -152,7 +152,7 @@ function fetchGeneSummary(geneId) {
             document.getElementById('gene-summary-' + geneId).innerText = geneSummary;
         })
         .catch(error => {
-            document.getElementById('gene-summary-' + geneId).innerText = 'Error fetching gene summary from NCBI';
+            document.getElementById('gene-summary-' + geneId).innerText = '';
         });
     }
 }
