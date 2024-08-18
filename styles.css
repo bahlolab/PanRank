@@ -126,7 +126,7 @@ h1.title {
   align-content: justify;
   justify-content: center;
   text-align: justify;
-  /*place-items: center;*/
-  grid-template-columns: 1fr 300px;
+  place-items: center;
+  grid-template-columns: 1fr 265px;
   gap: 50px; 
 }

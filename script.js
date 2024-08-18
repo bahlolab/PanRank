@@ -1,41 +1,41 @@
-const fixedUrl = 'data/fixed.csv.gz';
 
-function loadAndParseCSV(url, callback) {
-    fetch(url)
+function parseCSV(url) {
+  return fetch(url)
       .then(response => response.arrayBuffer())
       .then(buffer => {
         const firstBytes = new Uint8Array(buffer.slice(0, 2));
         const isGzip = firstBytes[0] === 0x1F && firstBytes[1] === 0x8B;
         let decompressed;
         if (isGzip) {
-          decompressed = pako.inflate(buffer, { to: 'string' });
+          return pako.inflate(buffer, { to: 'string' });
         } else {
-          decompressed = new TextDecoder().decode(buffer);
+          return new TextDecoder().decode(buffer);
         }
-        Papa.parse(decompressed, {
-        header: true,
-        dynamicTyping: true,
-        skipEmptyLines: true,
-        complete: function(results) {
-            callback(results.data);
-          }
-        });
       })
+      .then(csvText => {
+        console.log('parsing', url);
+        return new Promise((resolve, reject) => {
+          Papa.parse(csvText, {
+            header: true,
+            dynamicTyping: true,
+            skipEmptyLines: true,
+            complete: (result) => resolve(result.data),
+            error: (error) => reject(error)
+          });
+      });
+  });
 }
+
+const fixedUrl = 'data/fixed.csv.gz';
+const fixedData = parseCSV(fixedUrl);
 
 // Join two datasets row-wise
 function joinDataRowWise(data1, data2) {
-    const maxRows = Math.max(data1.length, data2.length);
-    const joinedData = [];
-    for (let i = 0; i < maxRows; i++) {
-        const row1 = data1[i] || {};
-        const row2 = data2[i] || {};
-        const joinedRow = { ...row1, ...row2 };
-        joinedData.push(joinedRow);
-    }
-    return joinedData;
+    return data1.map((row, index) => ({
+        ...row,
+        ...(data2[index] || {})
+    }));
 }
-
 // Create DataTable
 function createDataTable() {
     const columns = [
@@ -93,8 +93,8 @@ function createDataTable() {
                   var selectedUrl = $(this).val();
                   if (selectedUrl) {
                     var name = $('#file-select option:selected').text();
+                    loadData(selectedUrl);
                     plotlyROC(selectedUrl.replace('.csv.gz', '.roc.csv.gz'), name);
-                    loadData(fixedUrl, selectedUrl);
                   }
               });
               
@@ -105,7 +105,6 @@ function createDataTable() {
       }
     });
 }
-
 
 function getFilename() {
   return 'Genes4Epilepsy - ' + $('#file-select option:selected').text();
@@ -168,20 +167,20 @@ function fetchGeneSummary(geneId) {
 }
 
 // Load and update data on dropdown change
-function loadData(url1, url2) {
+function loadData(url) {
     let dataTable = $('#data-table').DataTable();
-    loadAndParseCSV(url1, function(data1) {
-      loadAndParseCSV(url2, function(data2) {
+    fixedData.then(data1 => {
+      parseCSV(url).then(data2 => {
         const joinedData = joinDataRowWise(data1, data2);
         dataTable.clear();
         dataTable.rows.add(joinedData);
         dataTable.draw();
       })
-    });
+    })
 }
 
 function plotlyROC(url, name) {
-  loadAndParseCSV(url, function(data) {
+  parseCSV(url).then(data => {
     // Plot the ROC curve
     var domTrace = {
         x: data.map(row => row.spec1m_Dominant),
@@ -252,5 +251,4 @@ function plotlyROC(url, name) {
 
 $(document).ready(function() { 
   createDataTable();
-  //var table = $('#data-table').DataTable();
 });
