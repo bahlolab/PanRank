@@ -10,7 +10,7 @@ PanRank is a method for ranking candidate disease genes based on a known disease
 
 ---
 
-### Implementaion
+### Implementation
 <img src="img/diagram.png">
 
 ### Training Data
