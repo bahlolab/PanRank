@@ -2,15 +2,22 @@
 title: 'PanRank - Genes4Epilepsy'
 css: styles.css
 ---
-
-This page contains **PanRank** candidate gene
-rankings based on gene panels from
+<div class="data-container">
+  <div id="description">
+This page contains **PanRank** candidate gene rankings based on gene panels from
 [Genes4Epilepsy](https://bahlolab.github.io/Genes4Epilepsy/), a curated list
-of monogenic epilepsy genes. PanRank scores are
-between 0 and 1 and represent the predicted probability that a gene is
-disease-causing with the specified mode of inheritance. The "Known Inheritance"
-column indicates the known mode of inheritance used to train the model.  
+of monogenic epilepsy genes. PanRank scores are between 0 and 1 and represent
+the predicted probability that a gene is disease-causing with the specified mode
+of inheritance. The "Known Inheritance" column indicates the known mode of 
+inheritance used to train the model.
 
+Choose the Epilepsy Phenotype and Gene Subset below. By default, genes are 
+sorted by decreasing PanRank Dominant score, and only genes not 
+yet associated with the selected phenotype ("novel" genes) are shown. 
+Hover over gene names for a description as well as links to external resources.
+  </div>
+  <div id="roc-plot" style="width:265px;height:275px;"></div>
+</div>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
@@ -37,6 +44,7 @@ make_doc_ready_script <- function(fixedUrl, initUrl) {
     '$(document).ready(function() {',
     str_c('const fixedUrl = "', fixedUrl, '";'),
     str_c('const initUrl = "', initUrl, '";'),
+    'initData();',
     'loadData(fixedUrl, initUrl);',
     '});',
     '</script>',
@@ -49,6 +57,7 @@ make_doc_ready_script <- function(fixedUrl, initUrl) {
 files <-
   list.files('data', pattern = '.csv.gz$', full.names = T) %>%
   keep(str_detect, 'G4E_') %>%
+  discard(str_detect, '.roc.') %>% 
   discard(str_detect, "fixed.csv.gz") %>%
   setNames(., str_remove(basename(.), '.csv.gz$'))
 
@@ -65,12 +74,11 @@ cat(
   make_select_script(
     named_files = files,
     label = 'Phenotype'
-  ),
-  
-  make_doc_ready_script(
-    fixedUrl = "data/fixed.csv.gz",
-    initUrl = files[1]
   )
+  # make_doc_ready_script(
+  #   fixedUrl = "data/fixed.csv.gz",
+  #   initUrl = files[1]
+  # )
 )
 ```
 

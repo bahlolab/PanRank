@@ -121,3 +121,12 @@ h1.title {
   display: none;
 }
 
+.data-container {
+  display: grid;
+  align-content: justify;
+  justify-content: center;
+  text-align: justify;
+  place-items: center;
+  grid-template-columns: 1fr 265px;
+  gap: 50px; 
+}

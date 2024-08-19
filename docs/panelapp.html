@@ -13,10 +13,7 @@
 
 <title>PanRank - PanelApp Australia</title>
 
-<link rel="icon" type="image/png" sizes="32x32" href="https://www.wehi.edu.au/wp-content/themes/wehi/dist/images/favicons/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="https://www.wehi.edu.au/wp-content/themes/wehi/dist/images/favicons/favicon-16x16.png">
-
-<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -269,6 +266,8 @@ $(document).ready(function () {
 </div>
 
 
+<div class="data-container">
+<div id="description">
 <p>This page contains <strong>PanRank</strong> candidate gene rankings
 based on gene panels from <a
 href="https://panelapp.agha.umccr.org/">PanelApp Australia</a>. <a
@@ -278,6 +277,18 @@ by the Scientific Community. PanRank scores are between 0 and 1 and
 represent the predicted probability that a gene is disease-causing with
 the specified mode of inheritance. The “Known Inheritance” column
 indicates the known mode of inheritance used to train the model.</p>
+Choose the PanelApp Panel and Gene Subset below. By default, genes are
+sorted by decreasing PanRank Dominant score, and only genes not yet
+associated with the selected phenotype (“novel” genes) are shown. Hover
+over gene names for a description as well as links to external
+resources.
+</div>
+<div id="roc-plot" style="width:265px;height:275px;">
+
+</div>
+</div>
+<p><link rel="icon" type="image/png" sizes="32x32" href="https://www.wehi.edu.au/wp-content/themes/wehi/dist/images/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.wehi.edu.au/wp-content/themes/wehi/dist/images/favicons/favicon-16x16.png"></p>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.min.js"></script>
@@ -286,6 +297,7 @@ indicates the known mode of inheritance used to train the model.</p>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="script.js"></script>
 <p><link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css"></p>
 <div id="table-container">
@@ -294,7 +306,7 @@ indicates the known mode of inheritance used to train the model.</p>
 </div>
 <script>
 function makeSelect() {
-return '<label for="file-select">Panel:</label>' +
+return '<label for="file-select">Phenotype:</label>' +
 '<select id="file-select" class="custom-select">' +
 '<option value="data/PAA_137.csv.gz">Mendeliome #137</option> ' +
 '<option value="data/PAA_202.csv.gz">Genetic Epilepsy #202</option> ' +
@@ -304,13 +316,6 @@ return '<label for="file-select">Panel:</label>' +
 '<option value="data/PAA_76.csv.gz">Congenital Heart Defect #76</option> ' +
 '</select>';
 }
-</script>
-<script>
-$(document).ready(function() {
-const fixedUrl = "data/fixed.csv.gz";
-const initUrl = "data/PAA_137.csv.gz";
-loadData(fixedUrl, initUrl);
-});
 </script>
 <hr />
 <p>PanRank is developed by <a

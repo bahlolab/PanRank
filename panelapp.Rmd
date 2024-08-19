@@ -3,7 +3,17 @@ title: 'PanRank - PanelApp Australia'
 css: styles.css
 ---
 
+<div class="data-container">
+  <div id="description">
 This page contains **PanRank** candidate gene rankings based on gene panels from [PanelApp Australia](https://panelapp.agha.umccr.org/). [PanelApp](https://panelapp.agha.umccr.org/) is a crowdsourcing tool to allow gene panels to be shared, downloaded, viewed and evaluated by the Scientific Community. PanRank scores are between 0 and 1 and represent the predicted probability that a gene is disease-causing with the specified mode of inheritance. The "Known Inheritance" column indicates the known mode of inheritance used to train the model.
+
+Choose the PanelApp Panel and Gene Subset below. By default, genes are 
+sorted by decreasing PanRank Dominant score, and only genes not 
+yet associated with the selected phenotype ("novel" genes) are shown. 
+Hover over gene names for a description as well as links to external resources.
+  </div>
+  <div id="roc-plot" style="width:265px;height:275px;"></div>
+</div>
 
 
 ```{r setup, include=FALSE}
@@ -46,6 +56,7 @@ paa_names <- read_tsv('data/paa_names.tsv') %>% with(setNames(name, id))
 files <- 
   list.files('data', pattern = '.csv.gz$', full.names = T) %>% 
   keep(str_detect, 'PAA_') %>% 
+  discard(str_detect, '.roc.') %>% 
   discard(str_detect, "fixed.csv.gz") %>% 
   setNames(., str_remove(basename(.), '.csv.gz$'))
 
@@ -58,13 +69,12 @@ cat(
   
   make_select_script(
     named_files = files,
-    label = 'Panel'
-  ),
-  
-  make_doc_ready_script(
-    fixedUrl = "data/fixed.csv.gz",
-    initUrl = files[1]
+    label = 'Phenotype'
   )
+  # make_doc_ready_script(
+  #   fixedUrl = "data/fixed.csv.gz",
+  #   initUrl = files[1]
+  # )
 )
 ```
 

@@ -13,10 +13,7 @@
 
 <title>PanRank - Genes4Epilepsy</title>
 
-<link rel="icon" type="image/png" sizes="32x32" href="https://www.wehi.edu.au/wp-content/themes/wehi/dist/images/favicons/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="https://www.wehi.edu.au/wp-content/themes/wehi/dist/images/favicons/favicon-16x16.png">
-
-<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -269,6 +266,8 @@ $(document).ready(function () {
 </div>
 
 
+<div class="data-container">
+<div id="description">
 <p>This page contains <strong>PanRank</strong> candidate gene rankings
 based on gene panels from <a
 href="https://bahlolab.github.io/Genes4Epilepsy/">Genes4Epilepsy</a>, a
@@ -277,6 +276,18 @@ and 1 and represent the predicted probability that a gene is
 disease-causing with the specified mode of inheritance. The “Known
 Inheritance” column indicates the known mode of inheritance used to
 train the model.</p>
+Choose the Epilepsy Phenotype and Gene Subset below. By default, genes
+are sorted by decreasing PanRank Dominant score, and only genes not yet
+associated with the selected phenotype (“novel” genes) are shown. Hover
+over gene names for a description as well as links to external
+resources.
+</div>
+<div id="roc-plot" style="width:265px;height:275px;">
+
+</div>
+</div>
+<p><link rel="icon" type="image/png" sizes="32x32" href="https://www.wehi.edu.au/wp-content/themes/wehi/dist/images/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.wehi.edu.au/wp-content/themes/wehi/dist/images/favicons/favicon-16x16.png"></p>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.min.js"></script>
@@ -285,6 +296,7 @@ train the model.</p>
 <script src="https://cdn.datatables.net/buttons/2.2.3/js/buttons.html5.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="script.js"></script>
 <p><link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css"></p>
 <div id="table-container">
@@ -303,13 +315,6 @@ return '<label for="file-select">Phenotype:</label>' +
 '<option value="data/G4E_PME.csv.gz">PME</option> ' +
 '</select>';
 }
-</script>
-<script>
-$(document).ready(function() {
-const fixedUrl = "data/fixed.csv.gz";
-const initUrl = "data/G4E_ALL.csv.gz";
-loadData(fixedUrl, initUrl);
-});
 </script>
 <p><strong>Note:</strong> “GGE” and “Focal” phenotypes have insufficient
 numbers of recessively inherited genes for training so no predictions

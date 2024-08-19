@@ -10,6 +10,9 @@ PanRank is a method for ranking candidate disease genes based on a known disease
 
 ---
 
+### Implementation
+<img src="img/diagram.png">
+
 ### Training Data
 
 | Dataset |	#Gene |	#Pred. | Predictor Description |
@@ -31,3 +34,6 @@ PanRank is a method for ranking candidate disease genes based on a known disease
 | ZFIN Phenotypes |	4,216 |	21,499 |	Binary phenotypes in zebrafish matched to human gene orthologs |
 | Homology |	19,195 |	398 |	Percent identity of human gene homologs across species from Ensembl  |
 | Dosage Sensitivity |	17,426 |	2 |	Prediction scores for gene haplo- and triplo-sensitivity |
+
+### Results
+Precomputed rankings are available for [Genes4Epilepsy](genes4epilepsy.html) and select [PanelApp panels](panelapp.html).
