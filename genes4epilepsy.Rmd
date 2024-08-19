@@ -11,10 +11,10 @@ the predicted probability that a gene is disease-causing with the specified mode
 of inheritance. The "Known Inheritance" column indicates the known mode of 
 inheritance used to train the model.
 
-Choose the Epilepsy Phenotype and Gene Subset below. By default genes are 
-sorted by decreasing PanRank Dominant score, and only "Novel" (not 
-yet associated with selected phenotype) genes are shown. Hover over gene names 
-for more information and external links.
+Choose the Epilepsy Phenotype and Gene Subset below. By default, genes are 
+sorted by decreasing PanRank Dominant score, and only genes not 
+yet associated with the selected phenotype ("novel" genes) are shown. 
+Hover over gene names for a description as well as links to external resources.
   </div>
   <div id="roc-plot" style="width:265px;height:275px;"></div>
 </div>

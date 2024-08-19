@@ -1,102 +1,114 @@
 
-function loadAndParseCSV(url, callback) {
-    fetch(url)
+function parseCSV(url) {
+  return fetch(url)
       .then(response => response.arrayBuffer())
       .then(buffer => {
         const firstBytes = new Uint8Array(buffer.slice(0, 2));
         const isGzip = firstBytes[0] === 0x1F && firstBytes[1] === 0x8B;
         let decompressed;
         if (isGzip) {
-          decompressed = pako.inflate(buffer, { to: 'string' });
+          return pako.inflate(buffer, { to: 'string' });
         } else {
-          decompressed = new TextDecoder().decode(buffer);
+          return new TextDecoder().decode(buffer);
         }
-        Papa.parse(decompressed, {
-        header: true,
-        dynamicTyping: true,
-        skipEmptyLines: true,
-        complete: function(results) {
-            callback(results.data);
-          }
-        });
       })
+      .then(csvText => {
+        return new Promise((resolve, reject) => {
+          Papa.parse(csvText, {
+            header: true,
+            dynamicTyping: true,
+            skipEmptyLines: true,
+            complete: (result) => resolve(result.data),
+            error: (error) => reject(error)
+          });
+      });
+  });
+}
+
+const fixedData = parseCSV('data/fixed.csv.gz');
+const aucData = parseCSV('data/auc.csv');
+
+async function getAUC(NAME, CLASS) {
+  let data = await aucData;
+  let datum = data.find(row => row.name === NAME && row.class == CLASS) || {auc:null};
+  return datum.auc;
 }
 
 // Join two datasets row-wise
 function joinDataRowWise(data1, data2) {
-    const maxRows = Math.max(data1.length, data2.length);
-    const joinedData = [];
-    for (let i = 0; i < maxRows; i++) {
-        const row1 = data1[i] || {};
-        const row2 = data2[i] || {};
-        const joinedRow = { ...row1, ...row2 };
-        joinedData.push(joinedRow);
-    }
-    return joinedData;
+    return data1.map((row, index) => ({
+        ...row,
+        ...(data2[index] || {})
+    }));
 }
-
 // Create DataTable
-function createDataTable(data) {
-    if ($.fn.DataTable.isDataTable('#data-table')) {
-      let dataTable = $('#data-table').DataTable();
-      dataTable.clear();
-      dataTable.rows.add(data);
-      dataTable.draw();
-    } else {
-      const columns = Object.keys(data[0] || {})
-          .filter(key => key !== 'OMIM')
-          .map(key => ({
-              title: key,
-              data: key,
-              render: renderFun(key)
-          }));
-      $('#data-table').DataTable({
-          data: data,
-          columns: columns,
-          order: [[5, 'desc']],
-          dom: '<"top"lf>rtBip',//'frtBip',
-          buttons: [
-            { extend: 'csvHtml5',   text: 'Export CSV',   title: getFilename, exportOptions: {orthogonal: 'export'}},
-            { extend: 'excelHtml5', text: 'Export Excel', title: getFilename, exportOptions: {orthogonal: 'export'}}
-          ],
-          drawCallback: function() {
-            var summaries = document.querySelectorAll('[id^="gene-dropdown"]');
-            summaries.forEach(element => {
-                // Extract gene ID from the element's ID
-                const geneId = element.id.replace('gene-dropdown-', '');
-                element.addEventListener('mouseover', function() {
-                  fetchGeneSummary(geneId);
-                });
-            });
-          },
-          initComplete: function() {
-            var table = this.api();
-            
-            var subset = $(
-                '<label for="subset">Subset:</label>' +
-                '<select id="subset" class="custom-select">' +
-                '<option value="-">Novel Only</option>' +
-                '<option value="">All Genes</option>' +
-                '</select>')
-                .prependTo($(".dataTables_length"))
-                .on('change', function() {
-                    var filter = $(this).val();
-                    table.column(3)
-                         .search(filter)
-                         .draw();
-                });
-            subset.trigger('change');
+function createDataTable() {
+    const columns = [
+          'Symbol',
+          'NCBI Gene',
+          'Ensembl', 
+          'Known Inheritance', 
+          'PanRank Recessive', 
+          'PanRank Dominant']
+        .map(key => ({
+            title: key,
+            data: key,
+            render: renderFun(key)
+        }));
         
-            var select = $(makeSelect())
-                .prependTo($(".dataTables_length"))
-                .on('change', function() {
-                    var url1 = "data/fixed.csv.gz";
-                    var selectedUrl = $(this).val();
-                    loadData(url1, selectedUrl);
-                });
-        }
-      });
-    }
+    $('#data-table').DataTable({
+        data: [],
+        columns: columns,
+        order: [[5, 'desc']],
+        dom: '<"top"lf>rtBip',
+        buttons: [
+          { extend: 'csvHtml5',   text: 'Export CSV',   title: getFilename, exportOptions: {orthogonal: 'export'}},
+          { extend: 'excelHtml5', text: 'Export Excel', title: getFilename, exportOptions: {orthogonal: 'export'}}
+        ],
+        drawCallback: function() {
+          var summaries = document.querySelectorAll('[id^="gene-dropdown"]');
+          summaries.forEach(element => {
+              // Extract gene ID from the element's ID
+              const geneId = element.id.replace('gene-dropdown-', '');
+              element.addEventListener('mouseover', function() {
+                fetchGeneSummary(geneId);
+              });
+          });
+        },
+        initComplete: function() {
+          var table = this.api();
+          
+          var subset = $(
+              '<label for="subset">Subset:</label>' +
+              '<select id="subset" class="custom-select">' +
+              '<option value="-">Novel Only</option>' +
+              '<option value="">All Genes</option>' +
+              '</select>')
+              .prependTo($(".dataTables_length"))
+              .on('change', function() {
+                  var filter = $(this).val();
+                  table.column(3)
+                       .search(filter)
+                       .draw();
+              });
+      
+          var select = $(makeSelect())
+              .prependTo($(".dataTables_length"))
+              .on('change', function(event) {
+                  var selectedUrl = $(this).val();
+                  if (selectedUrl) {
+                    var name = $('#file-select option:selected').text();
+                    loadData(selectedUrl);
+                    plotlyROC(selectedUrl.replace('.csv.gz', '.roc.csv.gz'), name);
+                  }
+              });
+              
+          table.on('init', function() { 
+            subset.trigger('change');
+            select.trigger('change');
+          })
+      }
+    });
 }
 
 function getFilename() {
@@ -160,21 +172,92 @@ function fetchGeneSummary(geneId) {
 }
 
 // Load and update data on dropdown change
-async function loadData(url1, url2) {
-    let data1 = [];
-    let data2 = [];
-    loadAndParseCSV(url1, function(parsedData1) {
-      data1 = parsedData1;
-      if (data2.length > 0) {
-        const joinedData = joinDataRowWise(parsedData1, data2);
-        createDataTable(joinedData);
-      }
-    });
-    loadAndParseCSV(url2, function(parsedData2) {
-      data2 = parsedData2;
-      if (data1.length > 0) {
-          const joinedData = joinDataRowWise(data1, parsedData2);
-          createDataTable(joinedData);
-      }
-    });
+function loadData(url) {
+    let dataTable = $('#data-table').DataTable();
+    fixedData.then(data1 => {
+      parseCSV(url).then(data2 => {
+        const joinedData = joinDataRowWise(data1, data2);
+        dataTable.clear();
+        dataTable.rows.add(joinedData);
+        dataTable.draw();
+      })
+    })
 }
+
+function plotlyROC(url, name) {
+  parseCSV(url).then(async data => {
+    
+    let aucREC = await getAUC(url.replace('.roc.csv.gz', '').replace('data/', ''), 'REC');
+    let aucDOM = await getAUC(url.replace('.roc.csv.gz', '').replace('data/', ''), 'DOM');
+    // Plot the ROC curve
+    var domTrace = {
+        x: data.map(row => row.spec1m_DOM),
+        y: data.map(row => row.sens_DOM),
+        mode: 'lines',
+        name: 'Dominant AUC=' + aucDOM,
+        line: {
+            shape: 'hv',
+            color: '#2372B9'
+        }
+    };
+    
+    var recTrace = {
+        x: data.map(row => row.spec1m_REC),
+        y: data.map(row => row.sens_REC),
+        mode: 'lines',
+        name: 'Recessive AUC=' + aucREC,
+        line: {
+            shape: 'hv',
+            color: '#49A942'
+        }
+    };
+    
+    var diagTrace = {
+        x: [0, 1],
+        y: [0, 1],
+        mode: 'lines',
+        name: 'Random Guess',
+        showlegend: false,
+        line: {
+            dash: 'dot',
+            color: 'black'
+        }
+    };
+    
+    var traces = [domTrace, recTrace, diagTrace];
+    
+    var layout = {
+        title: name.replace(/ #\d+/g, '') + ' ROC',
+        xaxis: {
+            title: '1-Specificity',
+            range: [0, 1],
+            tickvals: [0, 0.25, 0.5, 0.75, 1],
+        },
+        yaxis: {
+            title: 'Sensitivity',
+            range: [-0.01, 1.01],
+            tickvals: [0, 0.25, 0.5, 0.75, 1],
+        },
+        legend: {
+          x: 0.50, // Horizontal position (0 - left, 1 - right)
+          y: 0.15, // Vertical position (0 - bottom, 1 - top)
+          xanchor: 'center', // Anchor point for x
+          yanchor: 'middle', // Anchor point for y
+          orientation: 'v' // Vertical orientation
+        },
+        margin: {
+          t: 40,  // Top margin
+          b: 40,  // Bottom margin
+          l: 40,  // Left margin
+          r: 0   // Right margin
+        },
+        showlegend: true
+    };
+    
+    Plotly.newPlot('roc-plot', traces, layout, { displayModeBar: false });
+  });
+}
+
+$(document).ready(function() { 
+  createDataTable();
+});

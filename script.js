@@ -13,7 +13,6 @@ function parseCSV(url) {
         }
       })
       .then(csvText => {
-        console.log('parsing', url);
         return new Promise((resolve, reject) => {
           Papa.parse(csvText, {
             header: true,
@@ -26,8 +25,14 @@ function parseCSV(url) {
   });
 }
 
-const fixedUrl = 'data/fixed.csv.gz';
-const fixedData = parseCSV(fixedUrl);
+const fixedData = parseCSV('data/fixed.csv.gz');
+const aucData = parseCSV('data/auc.csv');
+
+async function getAUC(NAME, CLASS) {
+  let data = await aucData;
+  let datum = data.find(row => row.name === NAME && row.class == CLASS) || {auc:null};
+  return datum.auc;
+}
 
 // Join two datasets row-wise
 function joinDataRowWise(data1, data2) {
@@ -180,26 +185,29 @@ function loadData(url) {
 }
 
 function plotlyROC(url, name) {
-  parseCSV(url).then(data => {
+  parseCSV(url).then(async data => {
+    
+    let aucREC = await getAUC(url.replace('.roc.csv.gz', '').replace('data/', ''), 'REC');
+    let aucDOM = await getAUC(url.replace('.roc.csv.gz', '').replace('data/', ''), 'DOM');
     // Plot the ROC curve
     var domTrace = {
-        x: data.map(row => row.spec1m_Dominant),
-        y: data.map(row => row.sens_Dominant),
+        x: data.map(row => row.spec1m_DOM),
+        y: data.map(row => row.sens_DOM),
         mode: 'lines',
-        name: 'Dominant',
+        name: 'Dominant AUC=' + aucDOM,
         line: {
-            shape: 'linear',
+            shape: 'hv',
             color: '#2372B9'
         }
     };
     
     var recTrace = {
-        x: data.map(row => row.spec1m_Recessive),
-        y: data.map(row => row.sens_Recessive),
+        x: data.map(row => row.spec1m_REC),
+        y: data.map(row => row.sens_REC),
         mode: 'lines',
-        name: 'Recessive',
+        name: 'Recessive AUC=' + aucREC,
         line: {
-            shape: 'linear',
+            shape: 'hv',
             color: '#49A942'
         }
     };
@@ -209,6 +217,7 @@ function plotlyROC(url, name) {
         y: [0, 1],
         mode: 'lines',
         name: 'Random Guess',
+        showlegend: false,
         line: {
             dash: 'dot',
             color: 'black'
@@ -218,7 +227,7 @@ function plotlyROC(url, name) {
     var traces = [domTrace, recTrace, diagTrace];
     
     var layout = {
-        title: name + ' ROC',
+        title: name.replace(/ #\d+/g, '') + ' ROC',
         xaxis: {
             title: '1-Specificity',
             range: [0, 1],
@@ -226,12 +235,12 @@ function plotlyROC(url, name) {
         },
         yaxis: {
             title: 'Sensitivity',
-            range: [0, 1],
+            range: [-0.01, 1.01],
             tickvals: [0, 0.25, 0.5, 0.75, 1],
         },
         legend: {
-          x: 0.75, // Horizontal position (0 - left, 1 - right)
-          y: 0.25, // Vertical position (0 - bottom, 1 - top)
+          x: 0.50, // Horizontal position (0 - left, 1 - right)
+          y: 0.15, // Vertical position (0 - bottom, 1 - top)
           xanchor: 'center', // Anchor point for x
           yanchor: 'middle', // Anchor point for y
           orientation: 'v' // Vertical orientation
