@@ -259,5 +259,9 @@ function plotlyROC(url, name) {
 }
 
 $(document).ready(function() { 
+  if (window.innerHeight > 1.5 * window.innerWidth) {
+    alert('This page is designed for desktop, please switch to landscape orientation for a better experience.');
+  }
   createDataTable();
+  
 });
