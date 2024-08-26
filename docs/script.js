@@ -5,8 +5,6 @@ function parseCSV(url) {
       .then(buffer => {
         const firstBytes = new Uint8Array(buffer.slice(0, 2));
         const isGzip = firstBytes[0] === 0x1F && firstBytes[1] === 0x8B;
-        console.log('isGzip: ', isGzip);
-        console.log(fflate);
         return new TextDecoder().decode(
           isGzip ? fflate.gunzipSync(new Uint8Array(buffer)) : buffer
         );
