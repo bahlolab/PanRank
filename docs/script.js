@@ -5,12 +5,11 @@ function parseCSV(url) {
       .then(buffer => {
         const firstBytes = new Uint8Array(buffer.slice(0, 2));
         const isGzip = firstBytes[0] === 0x1F && firstBytes[1] === 0x8B;
-        let decompressed;
-        if (isGzip) {
-          return pako.inflate(buffer, { to: 'string' });
-        } else {
-          return new TextDecoder().decode(buffer);
-        }
+        console.log('isGzip: ', isGzip);
+        console.log(fflate);
+        return new TextDecoder().decode(
+          isGzip ? fflate.gunzipSync(new Uint8Array(buffer)) : buffer
+        );
       })
       .then(csvText => {
         return new Promise((resolve, reject) => {
@@ -71,7 +70,7 @@ function createDataTable() {
               // Extract gene ID from the element's ID
               const geneId = element.id.replace('gene-dropdown-', '');
               element.addEventListener('mouseover', function() {
-                fetchGeneSummary(geneId);
+                fetchGeneSummaryDebounced(geneId);
               });
           });
         },
@@ -147,6 +146,14 @@ function renderFun(key) {
   }
 }
 
+function debounce(func, delay) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
 function fetchGeneSummary(geneId) {
     var apiUrl = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=gene&id=' + geneId + '&retmode=json';
     var text = document.getElementById('gene-summary-' + geneId).innerText;
@@ -171,6 +178,8 @@ function fetchGeneSummary(geneId) {
     }
 }
 
+const fetchGeneSummaryDebounced = debounce(fetchGeneSummary, 300);
+
 // Load and update data on dropdown change
 function loadData(url) {
     let dataTable = $('#data-table').DataTable();
@@ -179,7 +188,7 @@ function loadData(url) {
         const joinedData = joinDataRowWise(data1, data2);
         dataTable.clear();
         dataTable.rows.add(joinedData);
-        dataTable.draw();
+        dataTable.draw(false);
       })
     })
 }
