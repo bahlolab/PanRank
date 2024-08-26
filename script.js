@@ -194,14 +194,16 @@ function loadData(url) {
 function plotlyROC(url, name) {
   parseCSV(url).then(async data => {
     
-    let aucREC = await getAUC(url.replace('.roc.csv.gz', '').replace('data/', ''), 'REC');
-    let aucDOM = await getAUC(url.replace('.roc.csv.gz', '').replace('data/', ''), 'DOM');
-    // Plot the ROC curve
+    var aucREC = await getAUC(url.replace('.roc.csv.gz', '').replace('data/', ''), 'REC');
+    var aucDOM = await getAUC(url.replace('.roc.csv.gz', '').replace('data/', ''), 'DOM');
+
     var domTrace = {
-        x: data.map(row => row.spec1m_DOM),
-        y: data.map(row => row.sens_DOM),
+        x:    data.map(row => 1-row.spec1m_DOM),
+        y:    data.map(row => row.sens_DOM    ),
+        text: data.map(row => row.thresh_DOM  ),
+        hovertemplate: `<b>Dominant</b><br>AUC: ${aucDOM}<br>Specificity: %{x:.3f}<br>Sensitivity: %{y:.3f}<br>Threshold: %{text:.3f}<extra></extra>`,
         mode: 'lines',
-        name: 'Dominant AUC=' + aucDOM,
+        name: 'Dominant',
         line: {
             shape: 'hv',
             color: '#2372B9'
@@ -209,10 +211,12 @@ function plotlyROC(url, name) {
     };
     
     var recTrace = {
-        x: data.map(row => row.spec1m_REC),
-        y: data.map(row => row.sens_REC),
+        x:    data.map(row => 1-row.spec1m_REC),
+        y:    data.map(row => row.sens_REC    ),
+        text: data.map(row => row.thresh_REC  ),
+        hovertemplate: `<b>Recessive</b><br>AUC: ${aucREC}<br>Specificity: %{x:.3f}<br>Sensitivity: %{y:.3f}<br>Threshold: %{text:.3f}<extra></extra>`,
         mode: 'lines',
-        name: 'Recessive AUC=' + aucREC,
+        name: 'Recessive',
         line: {
             shape: 'hv',
             color: '#49A942'
@@ -220,7 +224,7 @@ function plotlyROC(url, name) {
     };
     
     var diagTrace = {
-        x: [0, 1],
+        x: [1, 0],
         y: [0, 1],
         mode: 'lines',
         name: 'Random Guess',
@@ -236,13 +240,13 @@ function plotlyROC(url, name) {
     var layout = {
         title: name.replace(/ #\d+/g, '') + ' ROC',
         xaxis: {
-            title: '1-Specificity',
-            range: [0, 1],
-            tickvals: [0, 0.25, 0.5, 0.75, 1],
+            title: 'Specificity',
+            range: [1.02, -0.02],
+            tickvals: [0, 0.25, 0.5, 0.75, 1].reverse(),
         },
         yaxis: {
             title: 'Sensitivity',
-            range: [-0.01, 1.01],
+            range: [-0.02, 1.02],
             tickvals: [0, 0.25, 0.5, 0.75, 1],
         },
         legend: {
@@ -258,6 +262,7 @@ function plotlyROC(url, name) {
           l: 40,  // Left margin
           r: 0   // Right margin
         },
+        hovermode: 'closest',
         showlegend: true
     };
     
